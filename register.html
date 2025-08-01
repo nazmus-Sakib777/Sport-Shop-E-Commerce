@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - SAS Sports Corner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navbar -->
+    <nav class="bg-blue-600 text-white p-4 sticky top-0 z-10">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold">SAS Sports Corner</a>
+            <div class="space-x-4">
+                <a href="login.html" class="hover:underline">Login</a>
+                <a href="register.html" class="hover:underline">Register</a>
+                <a href="cart.html" class="hover:underline">Cart (<span id="cart-count">0</span>)</a>
+                <a href="admin.html" class="hover:underline">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Register Section -->
+    <section class="container mx-auto py-8">
+        <div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+            <h2 class="text-2xl font-bold text-center mb-4">Register</h2>
+            <div id="error-message" class="text-red-500 text-center mb-4 hidden"></div>
+            <div class="space-y-4">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" id="name" class="mt-1 block w-full p-2 border border-gray-300 rounded" required>
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email" class="mt-1 block w-full p-2 border border-gray-300 rounded" required>
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="password" class="mt-1 block w-full p-2 border border-gray-300 rounded" required>
+                </div>
+                <button id="register-btn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Register</button>
+            </div>
+            <p class="text-center mt-4">Already have an account? <a href="login.html" class="text-blue-600 hover:underline">Login</a></p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 SAS Sports Corner. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        updateCartCount();
+
+        function updateCartCount() {
+            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cart-count').textContent = cartCount;
+        }
+
+        document.getElementById('register-btn').addEventListener('click', () => {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (name && email && password) {
+                alert('Registration successful! Please login.');
+                window.location.href = 'login.html';
+            } else {
+                errorMessage.textContent = 'Please fill in all fields';
+                errorMessage.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

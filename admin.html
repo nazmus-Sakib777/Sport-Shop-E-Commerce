@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SAS Sports Corner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navbar -->
+    <nav class="bg-blue-600 text-white p-4 sticky top-0 z-10">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold">SAS Sports Corner</a>
+            <div class="space-x-4">
+                <a href="login.html" class="hover:underline">Login</a>
+                <a href="register.html" class="hover:underline">Register</a>
+                <a href="cart.html" class="hover:underline">Cart (<span id="cart-count">0</span>)</a>
+                <a href="admin.html" class="hover:underline">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Dashboard Section -->
+    <section class="container mx-auto py-8">
+        <h2 class="text-3xl font-bold text-center mb-6">Admin Dashboard</h2>
+        <div class="bg-white p-6 rounded shadow">
+            <h3 class="text-xl font-semibold mb-4">Manage Products</h3>
+            <div class="mb-6">
+                <div class="space-y-4">
+                    <div>
+                        <label for="product-name" class="block text-sm font-medium text-gray-700">Product Name</label>
+                        <input type="text" id="product-name" class="mt-1 block w-full p-2 border border-gray-300 rounded">
+                    </div>
+                    <div>
+                        <label for="product-price" class="block text-sm font-medium text-gray-700">Price</label>
+                        <input type="number" id="product-price" class="mt-1 block w-full p-2 border border-gray-300 rounded" step="0.01">
+                    </div>
+                    <div>
+                        <label for="product-category" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select id="product-category" class="mt-1 block w-full p-2 border border-gray-300 rounded">
+                            <option value="football">Football</option>
+                            <option value="basketball">Basketball</option>
+                            <option value="tennis">Tennis</option>
+                            <option value="cricket">Cricket</option>
+                        </select>
+                    </div>
+                    <button id="add-product-btn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add Product</button>
+                </div>
+            </div>
+            <h3 class="text-xl font-semibold mb-4">Product List</h3>
+            <div id="product-list" class="space-y-2">
+                <!-- Products will be loaded via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 SAS Sports Corner. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let products = JSON.parse(localStorage.getItem('products')) || [
+            { id: '1', name: 'Football Boots', price: 59.99, category: 'football' },
+            { id: '2', name: 'Basketball', price: 29.99, category: 'basketball' },
+            { id: '3', name: 'Tennis Racket', price: 79.99, category: 'tennis' },
+            { id: '4', name: 'Cricket Bat', price: 99.99, category: 'cricket' }
+        ];
+        updateCartCount();
+        updateProductList();
+
+        function updateCartCount() {
+            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cart-count').textContent = cartCount;
+        }
+
+        function updateProductList() {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = products.map(product => `
+                <div class="flex justify-between items-center border-b py-2">
+                    <div>
+                        <h4 class="text-lg font-semibold">${product.name}</h4>
+                        <p class="text-gray-600">$${product.price.toFixed(2)} - ${product.category}</p>
+                    </div>
+                    <button class="text-red-600 hover:underline remove-product" data-id="${product.id}">Remove</button>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.remove-product').forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.dataset.id;
+                    products = products.filter(product => product.id !== id);
+                    localStorage.setItem('products', JSON.stringify(products));
+                    updateProductList();
+                });
+            });
+        }
+
+        document.getElementById('add-product-btn').addEventListener('click', () => {
+            const name = document.getElementById('product-name').value;
+            const price = parseFloat(document.getElementById('product-price').value);
+            const category = document.getElementById('product-category').value;
+
+            if (name && price && category) {
+                const id = (products.length + 1).toString();
+                products.push({ id, name, price, category });
+                localStorage.setItem('products', JSON.stringify(products));
+                updateProductList();
+                document.getElementById('product-name').value = '';
+                document.getElementById('product-price').value = '';
+                alert('Product added successfully!');
+            } else {
+                alert('Please fill in all fields');
+            }
+        });
+
+        if (!localStorage.getItem('isAdmin')) {
+            alert('Please login as admin to access this page');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
